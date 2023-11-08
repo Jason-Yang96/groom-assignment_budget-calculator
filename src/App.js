@@ -32,47 +32,64 @@ const App = () => {
     let newExpenseData = expenseData.filter((data) => data.id !== id);
     setExpenseData(newExpenseData);
   }
-
+  const handleRomoveAllClick = () => {
+    setExpenseData([]);
+  }
+  
   return (
-    <div className='bg-gray' >
-      <header>
-        <h1 className='head-title'>예산 계산기</h1>
-      </header>
-      <form className='list-insert' onSubmit={handleSubmit}>
-        <div className='expenditure-name'>
-          <label>지출 항목</label>
-          <input 
-            placeholder='항목 이름을 적어주세요'
-            onChange={handleExpenseNameChange}
-            value={expenseName}
-            />
-        </div>
-        <div className='cost'>
-          <label>예상 비용</label>
-          <input 
-            placeholder='예상 지출액을 적어주세요'
-            onChange={handleExpenseValueChange}
-            value={expenseValue}
-            />
-        </div>
+    <div className='flex flex-col items-center justify-center w-screen h-screen bg-blue-100'>
+      <div className='bg-white w-full p-6 m-4 rounded shadow md:w-3/4 md:max-w-lg lg:w-3/4 lg:max-w-lg'>
+        <header className='flex justify-between mb-3'>
+          <h1 className='text-2xl font-semibold	'>예산 계산기</h1>
+          <button onClick={handleRomoveAllClick}>Delete All</button>
+        </header>
+        <form className='flex justify-between' onSubmit={handleSubmit}>
+          <div className='flex flex-col flex-1'>
+            <label>지출 항목</label>
+            <input 
+              type='text'
+              placeholder='항목 이름을 적어주세요'
+              onChange={handleExpenseNameChange}
+              value={expenseName}
+              />
+          </div>
+          <div className='flex flex-col flex-1'>
+            <label>예상 비용</label>
+            <input 
+              type='number'
+              min='500'
+              placeholder='예상 지출액을 적어주세요'
+              onChange={handleExpenseValueChange}
+              value={expenseValue}
+              />
+          </div>
           <input
+            className='flex-none'
             type='submit'
             value='추가'
           />
-      </form>
-      <ul>
-        {expenseData.map((data) => (
-          <li key={data.id}>
-            <span>{data.name}</span>
-            <span>{data.value}</span>
-            <button
-              onClick={() => handleRemove(data.id)}  
-              >
-              X
-            </button>
-          </li>
-        ))}
-      </ul>
+        </form>
+        <ul className='mt-3'>
+          {expenseData.map((data) => (
+            <li 
+              className='flex justify-between mb-2'
+              key={data.id}>
+                <span className='flex-1'>{data.name}</span>
+                <span className='flex-1'>{parseInt(data.value).toLocaleString()}원</span>
+                <button
+                  className='flex-none'
+                  onClick={() => handleRemove(data.id)}  
+                  >
+                  삭제
+                </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h1>총 지출: {expenseData.reduce((total, data) =>  total + parseInt(data.value), 0).toLocaleString()}원
+        </h1>
+      </div>
     </div>
   )
 }

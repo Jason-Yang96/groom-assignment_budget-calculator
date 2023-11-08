@@ -5,6 +5,7 @@ const App = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [expenseName, setExpenseName] = useState("");
   const [expenseValue, setExpenseValue] = useState("");
+  const [alerMessage, setAlerMessage] = useState(null);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,8 +19,10 @@ const App = () => {
     setExpenseData(prev => [...prev, newExpense]);
     setExpenseName("");
     setExpenseValue("");
-    console.log(newExpense);
-    console.log(expenseData)
+    
+    setAlerMessage("항목이 추가되었습니다");
+    setTimeout(()=>setAlerMessage(null), 2000);
+    
   }
   
   const handleExpenseNameChange = (e) => {
@@ -31,13 +34,20 @@ const App = () => {
   const handleRemove = (id) => {
     let newExpenseData = expenseData.filter((data) => data.id !== id);
     setExpenseData(newExpenseData);
+    
+    setAlerMessage("항목이 삭제되었습니다");
+    setTimeout(()=>setAlerMessage(null), 2000);
   }
   const handleRomoveAllClick = () => {
     setExpenseData([]);
+    
+    setAlerMessage("항목이 모두 삭제되었습니다");
+    setTimeout(()=>setAlerMessage(null), 2000);
   }
   
   return (
-    <div className='flex flex-col items-center justify-center w-screen h-screen bg-blue-100'>
+    <div className='relative flex flex-col items-center justify-center w-screen h-screen bg-blue-100'>
+      <div className='absolute top-11'>{alerMessage}</div>
       <div className='bg-white w-full p-6 m-4 rounded shadow md:w-3/4 md:max-w-lg lg:w-3/4 lg:max-w-lg'>
         <header className='flex justify-between mb-3'>
           <h1 className='text-2xl font-semibold	'>예산 계산기</h1>
@@ -72,10 +82,16 @@ const App = () => {
         <ul className='mt-3'>
           {expenseData.map((data) => (
             <li 
-              className='flex justify-between mb-2'
+              className='flex justify-between mb-2 hover:bg-gray-200 active:bg-gray-300'
               key={data.id}>
                 <span className='flex-1'>{data.name}</span>
                 <span className='flex-1'>{parseInt(data.value).toLocaleString()}원</span>
+                <button
+                  className='flex-none mr-2'
+                  onClick={() => handleRemove(data.id)}  
+                  >
+                  수정
+                </button>
                 <button
                   className='flex-none'
                   onClick={() => handleRemove(data.id)}  
@@ -87,7 +103,9 @@ const App = () => {
         </ul>
       </div>
       <div>
-        <h1>총 지출: {expenseData.reduce((total, data) =>  total + parseInt(data.value), 0).toLocaleString()}원
+        <h1>총 예상 지출액: {expenseData
+          .reduce((total, data) =>  total + parseInt(data.value), 0)
+          .toLocaleString()}원 {/* 1000 마다 구분자 넣어주기 */}
         </h1>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles/App.css';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 const App = () => {
 	const [expenseData, setExpenseData] = useState([]);
@@ -39,7 +40,14 @@ const App = () => {
 		setAlerMessage('항목이 모두 삭제되었습니다');
 		setTimeout(() => setAlerMessage(null), 2000);
 	};
+	const handleEnd = (e) => {
+		if (!e.destination) return;
 
+		const newExpenseData = expenseData;
+		const [reorderedItem] = newExpenseData.splice(e.source.index, 1);
+		newExpenseData.splice(e.destination.index, 0, reorderedItem);
+		setExpenseData(newExpenseData);
+	};
 	return (
 		<div className='relative flex flex-col items-center justify-center w-screen h-screen bg-blue-100'>
 			<div className='absolute top-11'>{alerMessage}</div>
@@ -76,28 +84,68 @@ const App = () => {
 						value='추가'
 					/>
 				</form>
-				<ul className='mt-3'>
-					{expenseData.map((data) => (
-						<li
-							className='flex justify-between mb-2 hover:bg-gray-200 active:bg-gray-300'
-							key={data.id}>
-							<span className='flex-1'>{data.name}</span>
-							<span className='flex-1'>
-								{parseInt(data.value).toLocaleString()}원
-							</span>
-							<button
-								className='flex-none mr-2'
-								onClick={() => handleRemove(data.id)}>
-								수정
-							</button>
-							<button
-								className='flex-none'
-								onClick={() => handleRemove(data.id)}>
-								삭제
-							</button>
-						</li>
-					))}
-				</ul>
+				<DragDropContext onDragEnd={handleEnd}>
+					<Droppable droppableId='expenseItems'>
+						{(provided) => (
+							<div
+								{...provided.droppableProps}
+								ref={provided.innerRef}>
+								<ul className='mt-3'>
+									{expenseData.map((data, index) => (
+										<Draggable
+											key={data.id}
+											draggableId={data.id.toString()}
+											index={index}>
+											{(provided, snapshot) => (
+												<div
+													key={data.id}
+													{...provided.draggableProps}
+													ref={provided.innerRef}
+													className={`${
+														snapshot.isDragging
+															? 'bg-gray-400'
+															: 'bg-gray-100'
+													}`}>
+													<li
+														className='flex justify-between mb-2 hover:bg-gray-200 active:bg-gray-300'
+														key={data.id}>
+														<span className='flex-1'>
+															{data.name}
+														</span>
+														<span className='flex-1'>
+															{parseInt(
+																data.value
+															).toLocaleString()}
+															원
+														</span>
+														<button
+															className='flex-none mr-2'
+															onClick={() =>
+																handleRemove(
+																	data.id
+																)
+															}>
+															수정
+														</button>
+														<button
+															className='flex-none'
+															onClick={() =>
+																handleRemove(
+																	data.id
+																)
+															}>
+															삭제
+														</button>
+													</li>
+												</div>
+											)}
+										</Draggable>
+									))}
+								</ul>
+							</div>
+						)}
+					</Droppable>
+				</DragDropContext>
 			</div>
 			<div>
 				<h1>

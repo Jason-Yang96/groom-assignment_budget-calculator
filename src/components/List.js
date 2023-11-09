@@ -5,8 +5,6 @@ const List = ({
 	id,
 	value,
 	name,
-	provided,
-	snapshot,
 	handleRemove,
 	expenseData,
 	setExpenseData,
@@ -70,12 +68,7 @@ const List = ({
 		return (
 			<li
 				key={id}
-				{...provided.draggableProps}
-				ref={provided.innerRef}
-				{...provided.dragHandleProps}
-				className={`${
-					snapshot.isDragging ? 'bg-gray-400' : 'bg-gray-100'
-				} flex justify-between mb-2 hover:bg-gray-200 active:bg-gray-300`}>
+				className={`flex justify-between mb-2 hover:bg-gray-200 active:bg-gray-300`}>
 				<span className='flex-1'>{name}</span>
 				<span className='flex-1'>
 					{parseInt(value).toLocaleString()}원

@@ -6,8 +6,12 @@ import Form from './components/Form';
 import Sum from './components/Sum';
 import Lists from './components/Lists';
 
+const initialExpenseData = localStorage.getItem('expenseData')
+	? JSON.parse(localStorage.getItem('expenseData'))
+	: [];
+
 const App = () => {
-	const [expenseData, setExpenseData] = useState([]);
+	const [expenseData, setExpenseData] = useState(initialExpenseData);
 	const [expenseName, setExpenseName] = useState('');
 	const [expenseValue, setExpenseValue] = useState('');
 	const [alertMessage, setAlertMessage] = useState(null);
@@ -25,6 +29,10 @@ const App = () => {
 		setExpenseValue('');
 		setAlertMessage('항목이 추가되었습니다');
 		setTimeout(() => setAlertMessage(null), 2000);
+		localStorage.setItem(
+			'expenseData',
+			JSON.stringify([...expenseData, newExpense])
+		);
 	};
 	const handleExpenseNameChange = (e) => {
 		setExpenseName(e.target.value);
@@ -37,6 +45,7 @@ const App = () => {
 		setExpenseData(newExpenseData);
 		setAlertMessage('항목이 삭제되었습니다');
 		setTimeout(() => setAlertMessage(null), 2000);
+		localStorage.setItem('expenseData', JSON.stringify(newExpenseData));
 	};
 
 	const handleEnd = (e) => {
@@ -46,6 +55,7 @@ const App = () => {
 		const [reorderedItem] = newExpenseData.splice(e.source.index, 1);
 		newExpenseData.splice(e.destination.index, 0, reorderedItem);
 		setExpenseData(newExpenseData);
+		localStorage.setItem('expenseData', JSON.stringify(newExpenseData));
 	};
 	return (
 		<div className='relative flex flex-col items-center justify-center w-screen h-screen bg-blue-100'>

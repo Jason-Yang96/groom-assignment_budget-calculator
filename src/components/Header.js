@@ -5,6 +5,7 @@ const Header = ({ setExpenseData, setAlerMessage }) => {
 		setExpenseData([]);
 		setAlerMessage('항목이 모두 삭제되었습니다');
 		setTimeout(() => setAlerMessage(null), 2000);
+		localStorage.setItem('expenseData', JSON.stringify([]));
 	};
 	return (
 		<header className='flex justify-between mb-3'>

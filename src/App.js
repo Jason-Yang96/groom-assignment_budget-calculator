@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './styles/App.css';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import Header from './components/Header';
 import Notification from './components/Notification';
 import Form from './components/Form';
 import Sum from './components/Sum';
+import Lists from './components/Lists';
 
 const App = () => {
 	const [expenseData, setExpenseData] = useState([]);
@@ -62,67 +62,11 @@ const App = () => {
 					handleExpenseValueChange={handleExpenseValueChange}
 					expenseValue={expenseValue}
 				/>
-				<div>
-					<DragDropContext onDragEnd={handleEnd}>
-						<Droppable droppableId={'expenseItems'}>
-							{(provided) => (
-								<ul
-									{...provided.droppableProps}
-									ref={provided.innerRef}
-									className='mt-3'>
-									{expenseData.map((data, index) => (
-										<Draggable
-											key={data.id}
-											draggableId={data.id.toString()}
-											index={index}>
-											{(provided, snapshot) => (
-												<li
-													key={data.id}
-													{...provided.draggableProps}
-													ref={provided.innerRef}
-													{...provided.dragHandleProps}
-													className={`${
-														snapshot.isDragging
-															? 'bg-gray-400'
-															: 'bg-gray-100'
-													} flex justify-between mb-2 hover:bg-gray-200 active:bg-gray-300`}>
-													<span className='flex-1'>
-														{data.name}
-													</span>
-													<span className='flex-1'>
-														{parseInt(
-															data.value
-														).toLocaleString()}
-														원
-													</span>
-													<button
-														className='flex-none mr-2'
-														onClick={() =>
-															handleRemove(
-																data.id
-															)
-														}>
-														수정
-													</button>
-													<button
-														className='flex-none'
-														onClick={() =>
-															handleRemove(
-																data.id
-															)
-														}>
-														삭제
-													</button>
-												</li>
-											)}
-										</Draggable>
-									))}
-									{provided.placeholder}
-								</ul>
-							)}
-						</Droppable>
-					</DragDropContext>
-				</div>
+				<Lists
+					handleRemove={handleRemove}
+					handleEnd={handleEnd}
+					expenseData={expenseData}
+				/>
 			</div>
 			<Sum expenseData={expenseData} />
 		</div>

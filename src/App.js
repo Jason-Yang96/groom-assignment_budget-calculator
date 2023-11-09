@@ -76,6 +76,7 @@ const App = () => {
 					handleRemove={handleRemove}
 					handleEnd={handleEnd}
 					expenseData={expenseData}
+					setExpenseData={setExpenseData}
 				/>
 			</div>
 			<Sum expenseData={expenseData} />
